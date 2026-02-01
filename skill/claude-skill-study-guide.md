@@ -221,6 +221,33 @@ EBITDA,Earnings Before Interest, Taxes, Depreciation, and Amortization
 - **Separation of Concerns**: The Python script handles the math (deterministic), Claude handles the explanation (probabilistic).
 - **Resource Offloading**: Large glossaries don't clutter the system prompt; they live in `resources/` and are read only when needed.
 
+### 3. Testing it Out
+
+#### A. Sample `USER_FILE.csv`
+Create this file to test the skill:
+```csv
+project_id,revenue,cost
+A-100,50000,30000
+B-200,120000,80000
+C-300,75000,90000
+```
+
+#### B. Generation Prompt
+If you don't want to create the CSV manually, you can ask Claude:
+> "Generate a sample `USER_FILE.csv` with 10 rows containing 'revenue' and 'cost' columns for testing the data-analyzer skill."
+
+#### C. Running the Test
+Once you have the CSV (or have generated it), trigger the skill:
+> "Analyze this financial data for me."
+
+Claude should:
+1.  Read your CSV.
+2.  Notice columns match the glossary terms (if needed).
+3.  Run `analyze_data.py`.
+4.  Output: **"Average ROI: 30.56%"** (or similar based on data).
+
+![test-complex-skill](test-complex-skill.png)
+![test-complex-skill-result](test-complex-skill-result.png)
 ---
 
 ## 📊 Success Metrics
