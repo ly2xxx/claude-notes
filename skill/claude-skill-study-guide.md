@@ -151,6 +151,78 @@ description: Action-oriented summary. Triggers + Capabilities.
 
 ---
 
+## 🔬 Deep Dive: The Anatomy of a Skill (Data Analyzer)
+
+Here is a comprehensive example of a complex skill that uses a Python script and a CSV resource, exactly as requested.
+
+### Scenario
+You want Claude to analyze financial CSV files using a specific, consistent logic defined in a Python script, and cross-reference a glossary of terms.
+
+### 1. Directory Structure
+```text
+data-analyzer/
+├── SKILL.md                  # The brain
+├── scripts/
+│   └── analyze_data.py       # The logic (Python script)
+└── resources/
+    └── financial_glossary.csv # The data (CSV resource)
+```
+
+### 2. The Content
+
+#### A. `SKILL.md`
+```markdown
+---
+name: data-analyzer
+description: Analyze financial datasets using standard accounting methods. Use when user uploads a CSV and says "analyze financial data" or "run audit".
+version: 1.0
+license: MIT
+---
+
+# Data Analyzer
+
+## Instructions
+1.  **Ingest Data**: Read the CSV file provided by the user.
+2.  **Load Glossary**: Read `resources/financial_glossary.csv` to understand specific term definitions if columns are ambiguous.
+3.  **Execute Analysis**: Run the analysis script on the user's file:
+    ```bash
+    python scripts/analyze_data.py --input [USER_FILE.csv]
+    ```
+4.  **Report**: Summarize the output from the script and highlight any anomalies found.
+```
+
+#### B. `scripts/analyze_data.py`
+```python
+import pandas as pd
+import argparse
+
+def analyze(file_path):
+    df = pd.read_csv(file_path)
+    # Perform complex logic that is hard to prompt
+    roi = (df['revenue'] - df['cost']) / df['cost']
+    print(f"Average ROI: {roi.mean():.2%}")
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--input", required=True)
+    args = parser.parse_args()
+    analyze(args.input)
+```
+
+#### C. `resources/financial_glossary.csv`
+```csv
+Term,Definition
+ROI,Return on Investment (Net Income / Cost of Investment)
+COGS,Cost of Good Sold
+EBITDA,Earnings Before Interest, Taxes, Depreciation, and Amortization
+```
+
+### Why this structure works
+- **Separation of Concerns**: The Python script handles the math (deterministic), Claude handles the explanation (probabilistic).
+- **Resource Offloading**: Large glossaries don't clutter the system prompt; they live in `resources/` and are read only when needed.
+
+---
+
 ## 📊 Success Metrics
 
 1.  **Trigger Rate:** Does it load automatically when you say the trigger phrase? (Target: >90%)
