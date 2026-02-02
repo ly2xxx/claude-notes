@@ -375,7 +375,7 @@ Track these to measure impact:
 - **Official docs:** https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching
 - **Pricing:** https://www.anthropic.com/pricing
 - **API reference:** https://docs.anthropic.com/en/api/messages
-- **Your aidev crew:** `C:\code\aidev\`
+- **Your aidev crew:** ` \aidev\`
 
 ---
 

@@ -486,7 +486,7 @@ Track these to measure impact:
 
 ## 📚 Resources
 
-- **Coding Agent skill:** `C:\Users\vl\AppData\Roaming\npm\node_modules\clawdbot\skills\coding-agent\SKILL.md`
+- **Coding Agent skill:** ` \AppData\Roaming\npm\node_modules\clawdbot\skills\coding-agent\SKILL.md`
 - **Process tool docs:** Check Clawdbot docs for process management
 - **Claude Code:** https://www.anthropic.com/claude/code
 - **Codex:** Your ~/.codex/config.toml
