@@ -588,6 +588,21 @@ git worktree remove worktree
 - Each worktree only duplicates tracked files
 - Consider sparse-checkout for monorepos
 
+### Pitfall 5: Accidental Manual Deletion
+
+**Problem**: You deleted a worktree folder manually (e.g., deleted the folder in File Explorer or used `rm -rf`) instead of using `git worktree remove`.
+**Result**: Git still thinks the branch is "checked out" in that missing folder, preventing you from deleting the branch or using it elsewhere.
+
+**Solution**:
+1. **Prune the stale metadata**:
+   ```bash
+   git worktree prune
+   ```
+2. **Now you can delete the branch** (if needed):
+   ```bash
+   git branch -D <branch-name>
+   ```
+
 ---
 
 ## 🎯 Tonight's Practice Plan
@@ -683,3 +698,5 @@ git merge feature/new-thing
 **Questions during practice?** Document them in a `worktree-questions.md` file and we'll review tomorrow.
 
 **Have fun** - This is going to change how you work with Claude!
+
+**More fun** - https://github.com/meleantonio/ChernyCode 
