@@ -1,0 +1,61 @@
+{
+  "name": "refactor-legacy",
+  "description": "Refactor legacy_code.py: analyze → architect → test (with dependency chain)",
+  "createdAt": 1770673010721,
+  "leadAgentId": "team-lead@refactor-legacy",
+  "leadSessionId": "bfd5703f-286f-47df-9034-b9ad6ceb2daf",
+  "members": [
+    {
+      "agentId": "team-lead@refactor-legacy",
+      "name": "team-lead",
+      "agentType": "team-lead",
+      "model": "claude-opus-4-6",
+      "joinedAt": 1770673010721,
+      "tmuxPaneId": "",
+      "cwd": "\\claude-notes",
+      "subscriptions": []
+    },
+    {
+      "agentId": "analyzer@refactor-legacy",
+      "name": "analyzer",
+      "agentType": "general-purpose",
+      "model": "sonnet",
+      "prompt": "You are a code analyst on a refactoring team. Your job is to thoroughly analyze `legacy_code.py` and document all issues.\n\nRead the file at: \\claude-notes\\agent-teams\\claude-teams-lab\\legacy_code.py\n\nHere is the code for reference:\n```python\ndef process(data, type):\n    if type == 'sum':\n        r = 0\n        for i in data:\n            r = r + i\n        return r\n    elif type == 'avg':\n        r = 0\n        for i in data:\n            r = r + i\n        return r / len(data)\n    elif type == 'max':\n        r = data[0]\n        for i in data:\n            if i > r:\n                r = i\n        return r\n    else:\n        return None\n```\n\nAnalyze for:\n1. **Code smells** - naming issues, duplicated logic, god function, shadows builtins\n2. **Edge cases / bugs** - empty list handling, None inputs, ZeroDivisionError, type errors\n3. **Design problems** - single monolithic function, no separation of concerns, no extensibility\n4. **Best practice violations** - no type hints, no docstring, no error handling, uses `type` as param name\n\nWrite your complete analysis to: \\claude-notes\\agent-teams\\claude-teams-lab\\analysis.md\n\nFormat it with clear sections and severity levels (Critical / Warning / Suggestion).\n\nWhen done, send a message to the team-lead with a brief summary of your findings. This is critical — the architect depends on your analysis.",
+      "color": "blue",
+      "planModeRequired": false,
+      "joinedAt": 1770673028677,
+      "tmuxPaneId": "in-process",
+      "cwd": "\\claude-notes",
+      "subscriptions": [],
+      "backendType": "in-process"
+    },
+    {
+      "agentId": "architect@refactor-legacy",
+      "name": "architect",
+      "agentType": "general-purpose",
+      "model": "sonnet",
+      "prompt": "You are a software architect on a refactoring team. Your job is to design a clean, refactored version of `legacy_code.py`.\n\n**IMPORTANT: You must wait for the analyzer's findings before starting.** The analyzer teammate will send you a message or the team-lead will forward the analysis. Do NOT start until you have the analysis.\n\nOnce you receive the analysis:\n1. Read the analysis file at: \\claude-notes\\agent-teams\\claude-teams-lab\\analysis.md\n2. Read the original code at: \\claude-notes\\agent-teams\\claude-teams-lab\\legacy_code.py\n3. Design a refactored version that:\n   - Replaces the monolithic `process()` with clean, separate functions\n   - Uses a Strategy pattern or dispatch dict for extensibility\n   - Adds proper type hints, docstrings, and input validation\n   - Handles all edge cases identified in the analysis\n   - Keeps it simple — don't over-engineer\n\n**Your plan** (required before implementation) should include:\n- The proposed module structure\n- Function signatures with type hints\n- How edge cases will be handled\n- Before/after comparison\n\nAfter your plan is approved, write the refactored code to:\n\\claude-notes\\agent-teams\\claude-teams-lab\\refactored_code.py\n\nWhen done, send a message to the team-lead confirming completion. The tester depends on your output.",
+      "color": "green",
+      "planModeRequired": true,
+      "joinedAt": 1770673036363,
+      "tmuxPaneId": "in-process",
+      "cwd": "\\claude-notes",
+      "subscriptions": [],
+      "backendType": "in-process"
+    },
+    {
+      "agentId": "tester@refactor-legacy",
+      "name": "tester",
+      "agentType": "general-purpose",
+      "model": "sonnet",
+      "prompt": "You are a test engineer on a refactoring team. Your job is to write comprehensive tests for the refactored code.\n\n**IMPORTANT: You must wait for the architect to finish the refactored code before starting.** The architect teammate will message you or the team-lead will notify you. Do NOT start until the refactored code exists.\n\nOnce you receive confirmation:\n1. Read the refactored code at: \\claude-notes\\agent-teams\\claude-teams-lab\\refactored_code.py\n2. Read the analysis at: \\claude-notes\\agent-teams\\claude-teams-lab\\analysis.md\n3. Read the original code at: \\claude-notes\\agent-teams\\claude-teams-lab\\legacy_code.py\n\n**Your plan** (required before implementation) should include:\n- Test categories (unit, edge cases, error handling, regression)\n- List of specific test cases with expected behavior\n- How you'll verify backward compatibility with the original function\n\nAfter your plan is approved, write tests using pytest to:\n\\claude-notes\\agent-teams\\claude-teams-lab\\test_refactored.py\n\nTests should cover:\n- All operations (sum, avg, max) with normal inputs\n- Edge cases: empty list, single element, negative numbers, floats\n- Error cases: None input, non-numeric data, unknown operation type\n- Backward compatibility: same results as original for valid inputs\n- Boundary conditions: very large numbers, mixed int/float\n\nWhen done, send a message to the team-lead with a summary of test coverage.",
+      "color": "yellow",
+      "planModeRequired": true,
+      "joinedAt": 1770673042717,
+      "tmuxPaneId": "in-process",
+      "cwd": "\\claude-notes",
+      "subscriptions": [],
+      "backendType": "in-process"
+    }
+  ]
+}
