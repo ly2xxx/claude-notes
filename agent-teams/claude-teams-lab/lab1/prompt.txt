@@ -1,0 +1,22 @@
+Create an agent team with 2 teammates:
+1. "reviewer-utils" - Review utils.py and config.py for code quality, edge cases, and best practices
+2. "reviewer-main" - Review main.py and tests/ for logic errors and test coverage
+
+Each teammate should:
+- Document findings in a markdown file (findings-utils.md / findings-main.md)
+- Suggest specific improvements
+- Run in parallel
+
+Use the Sonnet model for both. team leader please report progress as each teammate completes, each teammate should announce when starting and finishing
+
+
+Thinking stored in AppData\Local\Temp\claude\tasks
+
+
+You're right — those output files are essentially empty. Unfortunately, background Task agents don't persist their full thinking/transcript to the output file. The output files only capture the final return message, which in this case was minimal.
+
+There's no built-in way to review a teammate's step-by-step thinking process after the fact. What you can see is:
+
+The deliverables they produced — the findings markdown files
+Progress notifications — the system reminders that appeared during the conversation (e.g., "2 new tools used, 15058 new tokens")
+If you need visibility into the reasoning process in the future, one workaround is to instruct the agent to log its thinking into the output file itself — e.g., "Write a detailed log of every step you take to a review-log.md file." That way you get a self-reported audit trail alongside the findings.
