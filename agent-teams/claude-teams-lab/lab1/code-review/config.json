@@ -1,0 +1,47 @@
+{
+  "name": "code-review",
+  "description": "Parallel code review of claude-teams-lab project",
+  "createdAt": 1770671382584,
+  "leadAgentId": "team-lead@code-review",
+  "leadSessionId": "bfd5703f-286f-47df-9034-b9ad6ceb2daf",
+  "members": [
+    {
+      "agentId": "team-lead@code-review",
+      "name": "team-lead",
+      "agentType": "team-lead",
+      "model": "claude-opus-4-6",
+      "joinedAt": 1770671382584,
+      "tmuxPaneId": "",
+      "cwd": "\claude-notes",
+      "subscriptions": []
+    },
+    {
+      "agentId": "reviewer-utils@code-review",
+      "name": "reviewer-utils",
+      "agentType": "general-purpose",
+      "model": "sonnet",
+      "prompt": "You are a code reviewer. Review the following two files from the project at \claude-notes\\agent-teams\\claude-teams-lab\\ for code quality, edge cases, and best practices.\n\n**File 1: utils.py**\n```python\ndef calculate_total(items):\n    return sum(items)\n\ndef format_output(value, currency='USD'):\n    return f\"{currency} {value:.2f}\"\n```\n\n**File 2: config.py**\n```python\nsettings = {\n    'currency': 'USD',\n    'tax_rate': 0.2,\n    'debug': True\n}\n```\n\nYour task:\n1. Review both files for code quality issues, edge cases, and best practices violations\n2. Suggest specific improvements with code examples\n3. Write all findings to a markdown file at: \claude-notes\\agent-teams\\claude-teams-lab\\findings-utils.md\n\nThe findings file should include:\n- A summary of each file reviewed\n- Issues found (categorized by severity: critical, warning, suggestion)\n- Specific code improvement suggestions with before/after examples\n- Edge cases that are not handled\n\nBe thorough but fair — note what's done well too.",
+      "color": "blue",
+      "planModeRequired": false,
+      "joinedAt": 1770671391309,
+      "tmuxPaneId": "in-process",
+      "cwd": "\claude-notes",
+      "subscriptions": [],
+      "backendType": "in-process"
+    },
+    {
+      "agentId": "reviewer-main@code-review",
+      "name": "reviewer-main",
+      "agentType": "general-purpose",
+      "model": "sonnet",
+      "prompt": "You are a code reviewer. Review the following file from the project at \claude-notes\\agent-teams\\claude-teams-lab\\ for logic errors and test coverage.\n\n**File: main.py**\n```python\nfrom utils import calculate_total, format_output\nfrom config import settings\n\ndef process_data(items):\n    total = calculate_total(items)\n    return format_output(total, settings['currency'])\n\nif __name__ == \"__main__\":\n    data = [100, 200, 300]\n    result = process_data(data)\n    print(result)\n```\n\n**Context - the other project files:**\n\nutils.py:\n```python\ndef calculate_total(items):\n    return sum(items)\n\ndef format_output(value, currency='USD'):\n    return f\"{currency} {value:.2f}\"\n```\n\nconfig.py:\n```python\nsettings = {\n    'currency': 'USD',\n    'tax_rate': 0.2,\n    'debug': True\n}\n```\n\n**Important:** There is NO tests/ directory in this project. No tests exist.\n\nYour task:\n1. Review main.py for logic errors, design issues, and best practices\n2. Note the complete absence of tests and suggest what tests should be written\n3. Write all findings to a markdown file at: \claude-notes\\agent-teams\\claude-teams-lab\\findings-main.md\n\nThe findings file should include:\n- A summary of main.py review\n- Logic errors or issues found (categorized by severity: critical, warning, suggestion)\n- The fact that no tests/ directory exists — this is a major gap\n- Specific test cases that should be written (with example test code)\n- Specific code improvement suggestions\n\nBe thorough but fair — note what's done well too.",
+      "color": "green",
+      "planModeRequired": false,
+      "joinedAt": 1770671397073,
+      "tmuxPaneId": "in-process",
+      "cwd": "\claude-notes",
+      "subscriptions": [],
+      "backendType": "in-process"
+    }
+  ]
+}
