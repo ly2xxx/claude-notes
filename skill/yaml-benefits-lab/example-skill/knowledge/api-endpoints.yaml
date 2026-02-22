@@ -1,0 +1,109 @@
+# API Endpoints Knowledge Base
+# This file is READ by scripts/api_client.py
+# 
+# Structure:
+#   service_name:
+#     base_url: <base URL>
+#     endpoints:
+#       action_name:
+#         method: <HTTP method>
+#         path: <URL path>
+#         description: <what it does>
+
+user_service:
+  base_url: https://api.example.com/v1
+  
+  endpoints:
+    get_user:
+      method: GET
+      path: /users/{user_id}
+      description: Retrieve user details by ID
+      requires_auth: true
+    
+    create_user:
+      method: POST
+      path: /users
+      description: Create a new user account
+      requires_auth: true
+    
+    update_user:
+      method: PUT
+      path: /users/{user_id}
+      description: Update existing user information
+      requires_auth: true
+    
+    delete_user:
+      method: DELETE
+      path: /users/{user_id}
+      description: Delete a user account
+      requires_auth: true
+    
+    list_users:
+      method: GET
+      path: /users
+      description: List all users (with pagination)
+      requires_auth: true
+
+payment_service:
+  base_url: https://api.example.com/payments
+  
+  endpoints:
+    process_payment:
+      method: POST
+      path: /process
+      description: Process a payment transaction
+      requires_auth: true
+    
+    refund_payment:
+      method: POST
+      path: /refund/{transaction_id}
+      description: Refund a completed transaction
+      requires_auth: true
+    
+    get_transaction:
+      method: GET
+      path: /transactions/{transaction_id}
+      description: Get transaction details
+      requires_auth: true
+    
+    list_transactions:
+      method: GET
+      path: /transactions
+      description: List all transactions for an account
+      requires_auth: true
+
+notification_service:
+  base_url: https://api.example.com/notifications
+  
+  endpoints:
+    send_email:
+      method: POST
+      path: /email
+      description: Send an email notification
+      requires_auth: false
+    
+    send_sms:
+      method: POST
+      path: /sms
+      description: Send an SMS notification
+      requires_auth: false
+    
+    get_notification_status:
+      method: GET
+      path: /status/{notification_id}
+      description: Check delivery status of a notification
+      requires_auth: false
+
+# Why YAML instead of Markdown?
+# 
+# ✅ Scripts can load this with: yaml.safe_load(file)
+# ✅ Access endpoints: data['user_service']['endpoints']['get_user']
+# ✅ Type-safe: requires_auth is boolean, not string
+# ✅ Easy to validate structure
+# ✅ No regex parsing needed!
+# 
+# If this was Markdown:
+# ❌ Would need complex regex to extract endpoints
+# ❌ Fragile - any formatting change breaks scripts
+# ❌ Everything would be strings (no booleans)
+# ❌ Hard to query programmatically

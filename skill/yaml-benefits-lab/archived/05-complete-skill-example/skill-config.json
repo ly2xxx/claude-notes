@@ -1,0 +1,52 @@
+{
+  "metadata": {
+    "name": "code-reviewer",
+    "version": "3.2.1",
+    "author": "Master Yang",
+    "description": "Automated code review assistant that analyzes code quality, security, and best practices",
+    "created": "2026-01-15T00:00:00Z",
+    "updated": "2026-02-20T00:00:00Z"
+  },
+  "system_prompt": "You are an expert code reviewer with deep knowledge of software engineering best practices.\n\nFocus areas:\n- Code quality and maintainability\n- Security vulnerabilities\n- Performance optimization\n- Design patterns and architecture\n- Testing coverage\n\nProvide constructive feedback with specific examples and suggestions.",
+  "configuration": {
+    "languages": ["python", "javascript", "typescript", "java", "go"],
+    "max_file_size_kb": 500,
+    "exclude_patterns": ["*.min.js", "*.bundle.js", "node_modules/*", "venv/*"],
+    "severity_levels": {
+      "critical": 0,
+      "high": 0,
+      "medium": 0,
+      "low": 0,
+      "info": 0
+    }
+  },
+  "review_rules": {
+    "security": {
+      "enabled": true,
+      "check_sql_injection": true,
+      "check_xss": true,
+      "check_secrets": true,
+      "check_dependencies": true
+    },
+    "quality": {
+      "enabled": true,
+      "max_function_length": 50,
+      "max_complexity": 10,
+      "require_docstrings": true,
+      "check_naming_conventions": true
+    },
+    "performance": {
+      "enabled": true,
+      "check_n_plus_one": true,
+      "check_memory_leaks": true,
+      "check_algorithm_complexity": true
+    }
+  },
+  "output": {
+    "format": "markdown",
+    "include_line_numbers": true,
+    "include_severity": true,
+    "include_examples": true,
+    "summary_first": true
+  }
+}

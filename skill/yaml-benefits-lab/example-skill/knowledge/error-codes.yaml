@@ -1,0 +1,143 @@
+# Error Codes Knowledge Base
+# This file is READ by scripts/error_handler.py
+#
+# Structure:
+#   error_codes:
+#     <code>:
+#       message: <error description>
+#       severity: <critical|error|warning|info>
+#       action: <what to do about it>
+#       category: <type of error>
+
+error_codes:
+  # User Service Errors (1xxx)
+  1001:
+    message: Invalid user ID format
+    severity: warning
+    category: validation
+    action: Ensure user ID is a valid integer
+  
+  1002:
+    message: User not found
+    severity: error
+    category: not_found
+    action: Verify the user ID exists in the system
+  
+  1003:
+    message: User already exists
+    severity: warning
+    category: duplicate
+    action: Use update endpoint instead, or check for existing user first
+  
+  1004:
+    message: Invalid user data
+    severity: error
+    category: validation
+    action: Check required fields (name, email) are provided and valid
+  
+  1005:
+    message: Unauthorized access to user data
+    severity: critical
+    category: auth
+    action: Verify authentication token and permissions
+  
+  # Payment Service Errors (2xxx)
+  2001:
+    message: Payment processing failed
+    severity: critical
+    category: payment
+    action: Check payment provider status and retry, or contact support
+  
+  2002:
+    message: Insufficient funds
+    severity: error
+    category: payment
+    action: Notify user to add funds to their account
+  
+  2003:
+    message: Invalid payment method
+    severity: error
+    category: validation
+    action: Verify payment method is supported (card, bank transfer, etc.)
+  
+  2004:
+    message: Transaction already processed
+    severity: warning
+    category: duplicate
+    action: Check transaction history before retrying
+  
+  2005:
+    message: Refund failed
+    severity: error
+    category: payment
+    action: Verify transaction is refundable and within refund window
+  
+  # Notification Service Errors (3xxx)
+  3001:
+    message: Invalid email address
+    severity: warning
+    category: validation
+    action: Validate email format before sending
+  
+  3002:
+    message: Email delivery failed
+    severity: error
+    category: delivery
+    action: Check SMTP server status and retry
+  
+  3003:
+    message: SMS delivery failed
+    severity: error
+    category: delivery
+    action: Verify phone number format and carrier availability
+  
+  3004:
+    message: Notification rate limit exceeded
+    severity: warning
+    category: rate_limit
+    action: Implement backoff strategy and retry after delay
+  
+  # General System Errors (9xxx)
+  9001:
+    message: Internal server error
+    severity: critical
+    category: system
+    action: Check server logs and contact system administrator
+  
+  9002:
+    message: Service temporarily unavailable
+    severity: error
+    category: availability
+    action: Retry after a short delay (exponential backoff recommended)
+  
+  9003:
+    message: Request timeout
+    severity: error
+    category: timeout
+    action: Check network connectivity and retry with increased timeout
+  
+  9004:
+    message: Invalid API key
+    severity: critical
+    category: auth
+    action: Verify API key is correct and not expired
+  
+  9005:
+    message: Rate limit exceeded
+    severity: warning
+    category: rate_limit
+    action: Implement rate limiting on client side and retry after cooldown
+
+# Why YAML instead of Markdown?
+#
+# ✅ Scripts can load this with: yaml.safe_load(file)
+# ✅ Access errors: data['error_codes'][1002]
+# ✅ Type-safe: severity is always one of 4 values
+# ✅ Easy to filter by category or severity
+# ✅ Structured schema can be validated
+#
+# If this was Markdown:
+# ❌ Parsing "- 1002: User not found" with regex is fragile
+# ❌ Can't easily query "all critical errors"
+# ❌ No type safety (severity could be typo'd)
+# ❌ Hard to maintain consistent structure

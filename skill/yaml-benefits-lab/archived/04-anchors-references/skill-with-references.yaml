@@ -1,0 +1,54 @@
+# Skill Configuration with YAML Anchors & References
+# This demonstrates DRY (Don't Repeat Yourself) principle
+
+# Define common settings once with anchors (&)
+common_settings: &default_settings
+  timeout: 30
+  retry_count: 3
+  log_level: info
+  cache_enabled: true
+
+# Define a base authentication config
+auth_config: &auth_base
+  method: oauth2
+  refresh_token: true
+  token_expiry: 3600
+
+# Now use these settings across multiple skills
+# The asterisk (*) references the anchored data
+
+skills:
+  email_skill:
+    name: email-processor
+    <<: *default_settings  # Merge all default settings
+    auth:
+      <<: *auth_base
+      scope: email.read
+  
+  calendar_skill:
+    name: calendar-manager
+    <<: *default_settings  # Same settings, no duplication!
+    auth:
+      <<: *auth_base
+      scope: calendar.modify
+  
+  drive_skill:
+    name: drive-browser
+    <<: *default_settings
+    timeout: 60  # Override just this one setting
+    auth:
+      <<: *auth_base
+      scope: drive.read
+
+# Benefits of Anchors & References:
+# 1. Define once, use many times
+# 2. Maintain consistency across configurations
+# 3. Easy to update - change the anchor, all references update
+# 4. Reduce errors from copy-paste
+# 5. Keep configuration DRY
+
+# JSON alternative would require:
+# - Copying the same values everywhere
+# - Risk of inconsistency
+# - More lines of code
+# - Harder to maintain

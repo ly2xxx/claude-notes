@@ -1,0 +1,27 @@
+{
+  "skill": {
+    "name": "weather-assistant",
+    "version": "2.1.0",
+    "author": "Master Yang",
+    "description": "Provides weather forecasts and current conditions",
+    "enabled": true,
+    "priority": 5,
+    "tags": [
+      "weather",
+      "forecast",
+      "utility"
+    ],
+    "settings": {
+      "default_location": "London",
+      "units": "metric",
+      "cache_duration": 300,
+      "api_endpoint": "https://api.weather.com/v1"
+    },
+    "capabilities": {
+      "current_weather": true,
+      "forecast": true,
+      "alerts": false,
+      "historical": false
+    }
+  }
+}

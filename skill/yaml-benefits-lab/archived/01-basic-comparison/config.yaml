@@ -1,0 +1,34 @@
+# Weather Assistant Skill Configuration
+# Same data as config.json, but more readable!
+
+skill:
+  name: weather-assistant
+  version: 2.1.0
+  author: Master Yang
+  description: Provides weather forecasts and current conditions
+  enabled: true
+  priority: 5
+  
+  tags:
+    - weather
+    - forecast
+    - utility
+  
+  settings:
+    default_location: London
+    units: metric
+    cache_duration: 300  # seconds
+    api_endpoint: https://api.weather.com/v1
+  
+  capabilities:
+    current_weather: true
+    forecast: true
+    alerts: false
+    historical: false
+
+# Notice how YAML:
+# - No quotes needed for simple strings
+# - No commas at end of lines
+# - No curly braces
+# - Comments explain configuration choices
+# - Much easier to read and edit!

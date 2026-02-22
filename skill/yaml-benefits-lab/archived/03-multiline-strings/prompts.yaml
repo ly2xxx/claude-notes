@@ -1,0 +1,49 @@
+# Report Generator Skill
+# Demonstrates YAML's superior multi-line string handling
+
+skill: report-generator
+
+# Using the pipe (|) for literal block - preserves line breaks
+system_prompt: |
+  You are a professional report generator. You analyze data and create comprehensive reports.
+  
+  Your reports should include:
+  - Executive summary
+  - Detailed findings
+  - Recommendations
+  - Supporting data
+  
+  Maintain a professional tone and cite all sources.
+
+# Using greater-than (>) for folded block - joins lines with spaces
+user_instructions: >
+  When generating reports:
+  1. Start with a brief overview
+  2. Present findings in a logical order
+  3. Use bullet points for clarity
+  4. Include relevant statistics
+  5. End with actionable recommendations
+  
+  Format the output as markdown for easy reading.
+
+# Multi-line example with literal formatting preserved
+example_output: |
+  # Monthly Sales Report
+  
+  ## Executive Summary
+  Sales increased by 15% compared to last month...
+  
+  ## Key Findings
+  - Product A: +20% growth
+  - Product B: -5% decline
+  - New customer acquisition: +30%
+  
+  ## Recommendations
+  Focus marketing efforts on Product A while investigating Product B performance issues.
+
+# YAML Multi-line Benefits:
+# - No escaped \n characters
+# - Natural formatting as you'd write it
+# - Easy to read and edit
+# - Preserves or folds whitespace as needed
+# - Much cleaner than JSON strings!

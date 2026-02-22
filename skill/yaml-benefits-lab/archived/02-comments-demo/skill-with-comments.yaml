@@ -1,0 +1,29 @@
+# Email Analyzer Skill Configuration
+# Last updated: 2026-02-22 by Master Yang
+
+skill: email-analyzer
+prompt: Analyze emails and extract key information
+
+# Processing Parameters
+parameters:
+  max_emails: 50  # Maximum number of emails to process in one batch
+  include_attachments: false  # Set to true to analyze attachment metadata
+  sentiment_analysis: true  # Perform sentiment detection on email body
+  priority_threshold: 0.7  # Score above which emails are marked as high priority (0.0-1.0)
+
+# Email Filtering Options
+filters:
+  exclude_spam: true  # Skip emails marked as spam by the mail server
+  min_confidence: 0.85  # Minimum confidence score for categorization (0.0-1.0)
+  date_range_days: 30  # Only analyze emails from the last N days
+
+# Why these settings?
+# - max_emails=50: Balances thoroughness with processing time
+# - priority_threshold=0.7: Found to be optimal after testing with 1000+ emails
+# - min_confidence=0.85: Reduces false positives while maintaining good coverage
+# - date_range_days=30: Focuses on recent, actionable emails
+
+# To modify this skill:
+# 1. Adjust max_emails if you need faster processing
+# 2. Lower priority_threshold if you're missing important emails
+# 3. Increase date_range_days for historical analysis

@@ -1,0 +1,15 @@
+{
+  "skill": "email-analyzer",
+  "prompt": "Analyze emails and extract key information",
+  "parameters": {
+    "max_emails": 50,
+    "include_attachments": false,
+    "sentiment_analysis": true,
+    "priority_threshold": 0.7
+  },
+  "filters": {
+    "exclude_spam": true,
+    "min_confidence": 0.85,
+    "date_range_days": 30
+  }
+}
