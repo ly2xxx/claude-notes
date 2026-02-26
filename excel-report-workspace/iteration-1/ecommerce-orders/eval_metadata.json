@@ -1,0 +1,15 @@
+{
+  "eval_id": 0,
+  "eval_name": "ecommerce-orders",
+  "prompt": "Hey, I've got this CSV of our online orders from last year. Can you give me a summary of what's going on? The file is excel-report-workspace/test-data/ecommerce_orders.csv",
+  "assertions": [
+    {"text": "Report markdown file exists in the outputs directory", "type": "file_exists"},
+    {"text": "Report contains an 'Executive Summary' section heading", "type": "content_check"},
+    {"text": "Report contains a 'Key Findings' section heading", "type": "content_check"},
+    {"text": "Report contains a 'Recommendations' section heading", "type": "content_check"},
+    {"text": "Report cites specific numeric values (e.g., mean, count, dollar amounts)", "type": "content_check"},
+    {"text": "Report correctly states the dataset has 200 rows", "type": "content_check"},
+    {"text": "Report flags high-value outlier orders (values around $900+)", "type": "content_check"},
+    {"text": "Report mentions at least 3 of the 5 product categories", "type": "content_check"}
+  ]
+}

@@ -1,0 +1,151 @@
+EmployeeID,Department,YearsAtCompany,SatisfactionRating,Salary,LastReviewScore,Comments
+EMP-001,Sales,5,5,75926.0,3.2,More PTO please
+EMP-002,Sales,14,4,61908.0,,
+EMP-003,Marketing,25,2,42556.0,3.4,
+EMP-004,HR,16,2,104220.0,4.4,
+EMP-005,Marketing,1,3,64112.0,4.6,
+EMP-006,Engineering,24,4,69186.0,2.4,Great place to work
+EMP-007,Engineering,7,3,88886.0,3.1,Great place to work
+EMP-008,Engineering,11,3,64115.0,4.5,More PTO please
+EMP-009,Marketing,25,,111040.0,4.5,
+EMP-010,HR,14,1,81581.0,,
+EMP-011,Sales,17,5,63393.0,2.9,
+EMP-012,Sales,13,5,70483.0,2.3,Great place to work
+EMP-013,Operations,17,,58665.0,,Great place to work
+EMP-014,Engineering,19,5,70708.0,4.0,
+EMP-015,Operations,11,,50869.0,3.7,Great place to work
+EMP-016,HR,1,3,68509.0,2.0,
+EMP-017,Engineering,11,1,75952.0,2.1,Need better tools
+EMP-018,Marketing,20,4,42924.0,3.4,
+EMP-019,Sales,2,4,83754.0,4.7,
+EMP-020,Marketing,16,5,74782.0,2.1,More PTO please
+EMP-021,Sales,9,1,82752.0,,
+EMP-022,HR,12,4,59927.0,2.6,More PTO please
+EMP-023,HR,11,5,71216.0,3.3,
+EMP-024,Sales,17,1,79434.0,,More PTO please
+EMP-025,Marketing,9,4,81752.0,4.2,
+EMP-026,Operations,13,1,88886.0,,More PTO please
+EMP-027,HR,11,2,81555.0,4.3,
+EMP-028,Sales,2,3,69079.0,4.8,
+EMP-029,Operations,4,3,50809.0,3.6,Great place to work
+EMP-030,Marketing,20,1,94002.0,,
+EMP-031,HR,16,5,94960.0,2.6,Need better tools
+EMP-032,Marketing,22,4,92961.0,,
+EMP-033,Engineering,14,4,247729.0,4.0,More PTO please
+EMP-034,Engineering,17,3,71435.0,4.1,More PTO please
+EMP-035,Sales,25,2,80719.0,,
+EMP-036,HR,0,5,80329.0,4.4,Need better tools
+EMP-037,Sales,19,1,46104.0,3.6,
+EMP-038,HR,18,,138268.0,3.9,Great place to work
+EMP-039,HR,21,2,94566.0,2.5,
+EMP-040,HR,16,1,50258.0,3.6,
+EMP-041,Sales,5,2,47709.0,4.5,
+EMP-042,Sales,20,3,107254.0,,
+EMP-043,Operations,17,,56756.0,2.5,Need better tools
+EMP-044,Operations,10,5,53339.0,,
+EMP-045,Engineering,2,,57121.0,4.3,Great place to work
+EMP-046,Operations,20,,53676.0,3.6,More PTO please
+EMP-047,Marketing,15,4,69942.0,,Great place to work
+EMP-048,HR,15,3,78698.0,2.9,More PTO please
+EMP-049,Marketing,23,3,81416.0,3.7,
+EMP-050,Sales,14,,70531.0,2.4,
+EMP-051,Marketing,12,4,72392.0,,
+EMP-052,Operations,23,2,108041.0,3.5,Great place to work
+EMP-053,Marketing,15,,92108.0,2.6,
+EMP-054,Engineering,1,5,64794.0,4.0,Great place to work
+EMP-055,Marketing,17,,79534.0,3.1,Great place to work
+EMP-056,Marketing,1,5,78035.0,3.1,
+EMP-057,Engineering,12,5,61954.0,2.4,
+EMP-058,HR,11,3,125168.0,3.1,
+EMP-059,Sales,19,5,76910.0,4.4,Need better tools
+EMP-060,HR,4,5,73269.0,,Need better tools
+EMP-061,Marketing,5,5,70982.0,4.5,Need better tools
+EMP-062,HR,22,4,56855.0,3.1,More PTO please
+EMP-063,Engineering,13,1,60400.0,4.9,Need better tools
+EMP-064,Operations,7,5,63912.0,3.6,More PTO please
+EMP-065,Operations,24,2,77834.0,4.1,
+EMP-066,Engineering,14,2,59930.0,2.6,Need better tools
+EMP-067,Operations,15,1,66029.0,5.0,Great place to work
+EMP-068,Operations,12,2,51067.0,3.6,Need better tools
+EMP-069,Marketing,21,3,62940.0,,Need better tools
+EMP-070,Marketing,7,3,64498.0,4.1,More PTO please
+EMP-071,HR,10,5,101323.0,2.4,More PTO please
+EMP-072,Operations,12,4,59025.0,4.9,
+EMP-073,Sales,9,,79018.0,4.0,More PTO please
+EMP-074,HR,6,5,69976.0,3.7,
+EMP-075,Sales,3,5,72391.0,2.7,
+EMP-076,Engineering,3,4,77797.0,,
+EMP-077,Sales,0,2,241488.0,2.6,
+EMP-078,Marketing,9,1,95239.0,2.7,More PTO please
+EMP-079,Engineering,5,2,76482.0,4.4,
+EMP-080,Marketing,1,,70025.0,2.3,
+EMP-081,Marketing,14,5,34678.0,,Need better tools
+EMP-082,HR,8,1,66252.0,4.2,More PTO please
+EMP-083,Marketing,22,3,77907.0,2.5,
+EMP-084,HR,13,1,49446.0,2.3,
+EMP-085,HR,10,1,71107.0,4.9,
+EMP-086,Operations,23,3,85162.0,4.1,
+EMP-087,Engineering,14,4,56060.0,4.3,More PTO please
+EMP-088,Engineering,20,3,34473.0,2.7,
+EMP-089,HR,4,5,52368.0,4.3,
+EMP-090,Sales,24,5,91974.0,2.2,Great place to work
+EMP-091,Operations,22,5,97755.0,2.6,Need better tools
+EMP-092,Sales,5,5,93915.0,4.0,More PTO please
+EMP-093,Operations,15,,39333.0,3.5,Great place to work
+EMP-094,Operations,1,3,69867.0,3.2,
+EMP-095,Engineering,23,1,87879.0,,
+EMP-096,Engineering,15,,76645.0,4.3,
+EMP-097,HR,11,4,33911.0,2.2,More PTO please
+EMP-098,Operations,4,3,84764.0,,Need better tools
+EMP-099,HR,16,,105855.0,4.9,Great place to work
+EMP-100,Operations,13,2,67447.0,,
+EMP-101,Sales,8,1,97907.0,4.8,
+EMP-102,Sales,6,,77317.0,3.3,More PTO please
+EMP-103,Engineering,7,4,51205.0,4.3,
+EMP-104,Operations,9,5,80391.0,3.8,More PTO please
+EMP-105,Marketing,7,2,93759.0,2.8,Need better tools
+EMP-106,Operations,23,4,70039.0,2.1,
+EMP-107,HR,25,4,59257.0,,Need better tools
+EMP-108,HR,7,3,80284.0,2.4,Great place to work
+EMP-109,Engineering,17,4,62960.0,,
+EMP-110,Marketing,20,,68598.0,3.1,Need better tools
+EMP-111,Sales,1,5,42781.0,,
+EMP-112,Operations,23,2,49940.0,4.6,
+EMP-113,Marketing,0,2,80738.0,3.4,
+EMP-114,Operations,22,2,69878.0,4.3,Great place to work
+EMP-115,HR,17,3,70433.0,2.3,More PTO please
+EMP-116,HR,24,2,93530.0,3.2,Need better tools
+EMP-117,Sales,23,,69155.0,3.3,
+EMP-118,Sales,10,5,113961.0,3.5,More PTO please
+EMP-119,Marketing,8,4,97220.0,2.5,
+EMP-120,Marketing,5,,66613.0,2.6,Need better tools
+EMP-121,Engineering,16,,96764.0,4.3,Great place to work
+EMP-122,Sales,20,2,36385.0,,Need better tools
+EMP-123,HR,11,,44797.0,4.0,
+EMP-124,Engineering,17,1,40057.0,,More PTO please
+EMP-125,Marketing,17,1,44154.0,4.8,
+EMP-126,Engineering,3,2,71612.0,,Need better tools
+EMP-127,Marketing,11,4,112048.0,2.7,More PTO please
+EMP-128,Sales,9,1,93696.0,4.6,
+EMP-129,Engineering,2,4,66215.0,,
+EMP-130,Engineering,15,3,70011.0,4.6,
+EMP-131,Operations,1,5,66507.0,,
+EMP-132,Operations,18,2,72852.0,2.9,
+EMP-133,Operations,4,4,85690.0,3.7,
+EMP-134,HR,21,3,65439.0,4.2,
+EMP-135,Engineering,16,3,90209.0,3.0,
+EMP-136,Operations,19,3,78388.0,,
+EMP-137,HR,15,5,89846.0,4.0,
+EMP-138,Operations,9,1,65082.0,,
+EMP-139,HR,22,2,70980.0,,
+EMP-140,Marketing,14,3,56325.0,,
+EMP-141,Sales,13,5,63620.0,,Need better tools
+EMP-142,Engineering,19,3,71344.0,2.0,Great place to work
+EMP-143,HR,24,,103774.0,3.7,
+EMP-144,HR,5,,49259.0,3.5,
+EMP-145,Sales,13,3,64833.0,2.7,More PTO please
+EMP-146,HR,19,4,72712.0,,
+EMP-147,Engineering,12,5,45893.0,3.3,
+EMP-148,Operations,4,5,96550.0,2.6,
+EMP-149,Sales,12,3,69582.0,4.3,
+EMP-150,HR,8,4,46632.0,4.8,

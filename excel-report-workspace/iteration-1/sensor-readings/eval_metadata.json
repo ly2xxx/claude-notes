@@ -1,0 +1,15 @@
+{
+  "eval_id": 2,
+  "eval_name": "sensor-readings",
+  "prompt": "Summarize this sensor log for me: excel-report-workspace/test-data/sensor_readings.csv",
+  "assertions": [
+    {"text": "Report markdown file exists in the outputs directory", "type": "file_exists"},
+    {"text": "Report contains an 'Executive Summary' section heading", "type": "content_check"},
+    {"text": "Report contains a 'Key Findings' section heading", "type": "content_check"},
+    {"text": "Report contains a 'Recommendations' section heading", "type": "content_check"},
+    {"text": "Report cites specific numeric values (e.g., temperature mean, pressure range)", "type": "content_check"},
+    {"text": "Report correctly states the dataset has 50 rows", "type": "content_check"},
+    {"text": "Report mentions all three metrics: temperature, humidity, and pressure", "type": "content_check"},
+    {"text": "Report references sensor IDs (S-01, S-02, or S-03)", "type": "content_check"}
+  ]
+}

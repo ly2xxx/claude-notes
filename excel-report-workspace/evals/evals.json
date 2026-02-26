@@ -1,0 +1,53 @@
+{
+  "skill_name": "excel-report",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "Hey, I've got this CSV of our online orders from last year. Can you give me a summary of what's going on? The file is excel-report-workspace/test-data/ecommerce_orders.csv",
+      "expected_output": "A structured markdown report with Executive Summary, Data Overview, Key Findings, and Recommendations. Saved to output/reports/ecommerce_orders-report.md",
+      "files": ["excel-report-workspace/test-data/ecommerce_orders.csv"],
+      "assertions": [
+        {"text": "Report markdown file exists in the outputs directory"},
+        {"text": "Report contains an 'Executive Summary' section heading"},
+        {"text": "Report contains a 'Key Findings' section heading"},
+        {"text": "Report contains a 'Recommendations' section heading"},
+        {"text": "Report cites specific numeric values (e.g., mean, count, dollar amounts)"},
+        {"text": "Report correctly states the dataset has 200 rows"},
+        {"text": "Report flags high-value outlier orders (values around $900+)"},
+        {"text": "Report mentions at least 3 of the 5 product categories"}
+      ]
+    },
+    {
+      "id": 1,
+      "prompt": "My HR team exported this employee survey data and I need to present findings to leadership. Can you break down excel-report-workspace/test-data/employee_survey.csv and flag anything I should be aware of?",
+      "expected_output": "A structured markdown report flagging missing values and salary outliers. Saved to output/reports/employee_survey-report.md",
+      "files": ["excel-report-workspace/test-data/employee_survey.csv"],
+      "assertions": [
+        {"text": "Report markdown file exists in the outputs directory"},
+        {"text": "Report contains an 'Executive Summary' section heading"},
+        {"text": "Report contains a 'Key Findings' section heading"},
+        {"text": "Report contains a 'Recommendations' section heading"},
+        {"text": "Report cites specific numeric values (e.g., mean salary, percentages)"},
+        {"text": "Report correctly states the dataset has 150 rows"},
+        {"text": "Report flags missing values in SatisfactionRating or LastReviewScore columns"},
+        {"text": "Report flags salary outliers ($180k+ values)"}
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Summarize this sensor log for me: excel-report-workspace/test-data/sensor_readings.csv",
+      "expected_output": "A structured markdown report with stats on temperature, humidity, pressure. Saved to output/reports/sensor_readings-report.md",
+      "files": ["excel-report-workspace/test-data/sensor_readings.csv"],
+      "assertions": [
+        {"text": "Report markdown file exists in the outputs directory"},
+        {"text": "Report contains an 'Executive Summary' section heading"},
+        {"text": "Report contains a 'Key Findings' section heading"},
+        {"text": "Report contains a 'Recommendations' section heading"},
+        {"text": "Report cites specific numeric values (e.g., temperature mean, pressure range)"},
+        {"text": "Report correctly states the dataset has 50 rows"},
+        {"text": "Report mentions all three metrics: temperature, humidity, and pressure"},
+        {"text": "Report references sensor IDs (S-01, S-02, or S-03)"}
+      ]
+    }
+  ]
+}

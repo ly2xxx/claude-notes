@@ -1,0 +1,15 @@
+{
+  "eval_id": 1,
+  "eval_name": "employee-survey",
+  "prompt": "My HR team exported this employee survey data and I need to present findings to leadership. Can you break down excel-report-workspace/test-data/employee_survey.csv and flag anything I should be aware of?",
+  "assertions": [
+    {"text": "Report markdown file exists in the outputs directory", "type": "file_exists"},
+    {"text": "Report contains an 'Executive Summary' section heading", "type": "content_check"},
+    {"text": "Report contains a 'Key Findings' section heading", "type": "content_check"},
+    {"text": "Report contains a 'Recommendations' section heading", "type": "content_check"},
+    {"text": "Report cites specific numeric values (e.g., mean salary, percentages)", "type": "content_check"},
+    {"text": "Report correctly states the dataset has 150 rows", "type": "content_check"},
+    {"text": "Report flags missing values in SatisfactionRating or LastReviewScore columns", "type": "content_check"},
+    {"text": "Report flags salary outliers ($180k+ values)", "type": "content_check"}
+  ]
+}
