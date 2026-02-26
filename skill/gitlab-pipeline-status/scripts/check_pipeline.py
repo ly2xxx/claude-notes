@@ -10,6 +10,7 @@ import re
 import sys
 import io
 import requests
+from pathlib import Path
 from typing import Optional, Dict, Any, List
 
 # Fix encoding for Windows console
@@ -118,6 +119,174 @@ def fetch_job_trace(gitlab_url: str, project_id: str, job_id: int, token: Option
     return "\n".join(lines)
 
 
+def fetch_knowledge(sources: List[str], token: Optional[str] = None) -> List[Dict[str, str]]:
+    """Fetch knowledge base content from URLs or local files.
+
+    Supports:
+      - HTTP(S) URLs (GitLab blob URLs are auto-converted to raw)
+      - Local file paths (absolute or relative to knowledge/ folder)
+    """
+    script_dir = Path(__file__).resolve().parent.parent
+    knowledge_dir = script_dir / "knowledge"
+    results: List[Dict[str, str]] = []
+
+    for source in sources:
+        try:
+            if source.startswith(("http://", "https://")):
+                # Convert GitLab blob URLs to raw so we get plain text
+                url = source.replace("/-/blob/", "/-/raw/")
+                headers = {"PRIVATE-TOKEN": token} if token else {}
+                resp = requests.get(url, headers=headers)
+                resp.raise_for_status()
+                results.append({"source": source, "content": resp.text})
+            else:
+                # Local file: try as-is first, then under knowledge/ folder
+                path = Path(source)
+                if not path.is_absolute() and not path.exists():
+                    path = knowledge_dir / source
+                results.append({
+                    "source": str(path),
+                    "content": path.read_text(encoding="utf-8"),
+                })
+        except Exception as e:
+            results.append({"source": source, "content": f"(failed to load: {e})"})
+
+    return results
+
+
+def _extract_error_lines(log: str) -> List[str]:
+    """Pull lines from a job log that look like error/failure messages."""
+    markers = ["error", "fatal", "denied", "exception", "failed", "panic", "traceback"]
+    errors = []
+    for line in log.splitlines():
+        stripped = line.strip()
+        if not stripped or len(stripped) < 10:
+            continue
+        lower = stripped.lower()
+        if any(m in lower for m in markers):
+            clean = re.sub(r"\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}\S*", "", stripped)
+            clean = re.sub(r"^\s*\S+\s*-\s*\S+\s*-\s*(ERROR|FATAL|WARNING)\s*-\s*", "", clean)
+            clean = clean.strip()
+            if len(clean) > 10:
+                errors.append(clean)
+    return errors
+
+
+# Words too common to be meaningful for relevance matching
+_STOP_WORDS = frozenset({
+    "the", "and", "for", "are", "but", "not", "you", "all", "can", "had",
+    "her", "was", "one", "our", "out", "has", "have", "from", "that", "this",
+    "with", "been", "will", "would", "could", "should", "does", "done", "into",
+    "than", "them", "then", "what", "when", "where", "which", "while", "about",
+    "each", "make", "like", "just", "over", "such", "take", "also", "some",
+    "file", "line", "code", "exit", "info", "none", "true", "false", "null",
+    "section", "start", "step", "script", "stage",
+})
+
+
+def _extract_technical_terms(text: str) -> set:
+    """Extract technical identifiers from text.
+
+    Captures: file paths, module.paths, snake_case, camelCase, class names,
+    function/method names, and other identifiers likely to be project-specific.
+    """
+    terms: set = set()
+
+    # File paths (e.g., python/git_operations.py, src/utils.ts)
+    for m in re.finditer(r'[\w./-]+\.\w{1,4}', text):
+        terms.add(m.group().lower())
+
+    # Dotted module paths (e.g., requests.exceptions.HTTPError)
+    for m in re.finditer(r'\b\w+(?:\.\w+){1,}', text):
+        terms.add(m.group().lower())
+
+    # snake_case identifiers (e.g., git_operations, update_base_images)
+    for m in re.finditer(r'\b[a-z]\w*_\w+', text, re.IGNORECASE):
+        terms.add(m.group().lower())
+
+    # CamelCase / PascalCase identifiers (e.g., HTTPError, DockerImage)
+    for m in re.finditer(r'\b[A-Z][a-z]+(?:[A-Z][a-z]+)+\b', text):
+        terms.add(m.group().lower())
+
+    # Remaining words (4+ chars, not stop words)
+    for m in re.finditer(r'\b[a-zA-Z]{4,}\b', text):
+        word = m.group().lower()
+        if word not in _STOP_WORDS:
+            terms.add(word)
+
+    return terms
+
+
+def analyze_root_cause(
+    failed_jobs: List[Dict[str, Any]],
+    job_logs: Dict[int, str],
+    knowledge: List[Dict[str, str]],
+) -> List[Dict[str, Any]]:
+    """Measure how relevant the knowledge base is to each failure.
+
+    The confidence % answers: 'How likely is this failure related to /
+    caused by the code or content described in the knowledge base?'
+
+    It works by extracting technical terms (file names, identifiers,
+    module paths, etc.) from both the job log and the KB, then measuring
+    the overlap.
+    """
+    if not knowledge:
+        return []
+
+    # Build KB technical term set
+    kb_text = "\n".join(k["content"] for k in knowledge if not k["content"].startswith("("))
+    kb_terms = _extract_technical_terms(kb_text)
+
+    analyses: List[Dict[str, Any]] = []
+
+    for job in failed_jobs:
+        log = job_logs.get(job["id"], "")
+        error_lines = _extract_error_lines(log)
+
+        # Extract terms from the full log (not just error lines) for broader relevance
+        log_terms = _extract_technical_terms(log)
+
+        if not log_terms:
+            analyses.append({
+                "job": job,
+                "error_lines": error_lines,
+                "relevance": 0,
+                "matched_terms": [],
+                "kb_excerpts": [],
+            })
+            continue
+
+        matched = sorted(log_terms & kb_terms)
+        relevance = int((len(matched) / len(log_terms)) * 100)
+        relevance = min(relevance, 95)  # cap at 95%
+
+        # Find short KB excerpts for the most specific matched terms (longest first)
+        kb_lower = kb_text.lower()
+        kb_excerpts: List[str] = []
+        for term in sorted(matched, key=len, reverse=True)[:5]:
+            idx = kb_lower.find(term)
+            if idx != -1:
+                start = max(0, idx - 30)
+                end = min(len(kb_text), idx + len(term) + 30)
+                excerpt = kb_text[start:end].replace("\n", " ").strip()
+                if start > 0:
+                    excerpt = "..." + excerpt
+                if end < len(kb_text):
+                    excerpt = excerpt + "..."
+                kb_excerpts.append(excerpt)
+
+        analyses.append({
+            "job": job,
+            "error_lines": error_lines,
+            "relevance": relevance,
+            "matched_terms": matched[:15],
+            "kb_excerpts": kb_excerpts,
+        })
+
+    return analyses
+
+
 def fetch_pipeline(gitlab_url: str, project_id: str, pipeline_id: Optional[str], token: Optional[str]) -> Dict[str, Any]:
     """Fetch pipeline data from GitLab API."""
     from urllib.parse import quote
@@ -156,8 +325,13 @@ def fetch_pipeline(gitlab_url: str, project_id: str, pipeline_id: Optional[str],
     return {"pipeline": pipeline, "jobs": jobs}
 
 
-def summarize_pipeline(data: Dict[str, Any], job_logs: Optional[Dict[int, str]] = None) -> str:
-    """Generate a summary of the pipeline status, optionally including failed job logs."""
+def summarize_pipeline(
+    data: Dict[str, Any],
+    job_logs: Optional[Dict[int, str]] = None,
+    knowledge: Optional[List[Dict[str, str]]] = None,
+    root_cause: Optional[List[Dict[str, Any]]] = None,
+) -> str:
+    """Generate a summary of the pipeline status, optionally including failed job logs and root cause analysis."""
     pipeline = data["pipeline"]
     jobs = data["jobs"]
 
@@ -227,6 +401,53 @@ def summarize_pipeline(data: Dict[str, Any], job_logs: Optional[Dict[int, str]] 
             summary.append(log)
             summary.append("")
 
+    # Knowledge sources
+    if knowledge:
+        summary.append("📚 KNOWLEDGE BASE:")
+        summary.append("-" * 60)
+        for kb in knowledge:
+            if kb["content"].startswith("(failed"):
+                summary.append(f"  ⚠️  {kb['source']} — {kb['content']}")
+            else:
+                preview = kb["content"][:120].replace("\n", " ").strip()
+                summary.append(f"  📄 {kb['source']}")
+                summary.append(f"     {preview}...")
+        summary.append("")
+
+    # Root cause analysis
+    if root_cause and failed_jobs:
+        summary.append("🔬 ROOT CAUSE ANALYSIS:")
+        summary.append("=" * 60)
+        for analysis in root_cause:
+            job = analysis["job"]
+            relevance = analysis["relevance"]
+            error_lines = analysis["error_lines"]
+            matched = analysis["matched_terms"]
+            excerpts = analysis["kb_excerpts"]
+
+            summary.append(f"\n  Job: {job['name']} (#{job['id']})")
+
+            if error_lines:
+                summary.append(f"  Error: {error_lines[0][:120]}")
+
+            bar = "█" * (relevance // 5) + "░" * (20 - relevance // 5)
+            summary.append(f"  KB relevance:  [{bar}] {relevance}%")
+
+            if matched:
+                summary.append(f"  Matched terms: {', '.join(matched[:8])}")
+            if excerpts:
+                summary.append(f"  KB excerpt:    {excerpts[0][:150]}")
+
+            if relevance == 0:
+                summary.append("  → Failure likely NOT related to knowledge base content")
+            elif relevance < 30:
+                summary.append("  → Low relevance — failure may be environmental / config")
+            elif relevance < 60:
+                summary.append("  → Moderate relevance — failure may involve KB content")
+            else:
+                summary.append("  → High relevance — failure likely related to KB content")
+        summary.append("")
+
     # Verdict
     summary.append("🎯 VERDICT:")
     summary.append("-" * 60)
@@ -246,6 +467,11 @@ Examples:
   # Check via direct pipeline or job URL
   python check_pipeline.py --link http://gitlab.example.com/group/project/-/pipelines/283
   python check_pipeline.py --link http://gitlab.example.com/group/project/-/jobs/794
+
+  # With knowledge base for root cause analysis
+  python check_pipeline.py --link http://gitlab.example.com/group/project/-/pipelines/283 \\
+    --knowledge http://gitlab.example.com/group/project/-/blob/main/README.md \\
+    --knowledge runbook.md
 
   # Check latest pipeline for a project on gitlab.com
   python check_pipeline.py --project 278964
@@ -291,6 +517,15 @@ Examples:
         help="Number of log lines to show per failed job (default: 50, 0=full log)"
     )
 
+    parser.add_argument(
+        "--knowledge",
+        nargs="*",
+        default=[],
+        help="Knowledge base sources: URLs or local file paths (e.g., "
+             "http://gitlab.example.com/group/project/-/blob/main/README.md "
+             "or knowledge/runbook.md)"
+    )
+
     args = parser.parse_args()
 
     if not args.link and not args.project:
@@ -332,7 +567,23 @@ Examples:
                 except Exception as log_err:
                     job_logs[job["id"]] = f"(could not fetch log: {log_err})"
 
-        summary = summarize_pipeline(data, job_logs=job_logs)
+        # Fetch knowledge base if provided
+        kb_data: List[Dict[str, str]] = []
+        rca: List[Dict[str, Any]] = []
+        if args.knowledge:
+            print(f"📚 Loading {len(args.knowledge)} knowledge source(s)...")
+            kb_data = fetch_knowledge(args.knowledge, token=args.token)
+            if failed and job_logs:
+                failed_info = [
+                    {"id": j["id"], "name": j["name"], "stage": j["stage"]}
+                    for j in failed
+                ]
+                rca = analyze_root_cause(failed_info, job_logs, kb_data)
+            print()
+
+        summary = summarize_pipeline(
+            data, job_logs=job_logs, knowledge=kb_data or None, root_cause=rca or None,
+        )
         print(summary)
         
         # Exit code based on status

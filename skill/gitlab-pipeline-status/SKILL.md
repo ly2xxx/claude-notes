@@ -12,7 +12,8 @@ Check GitLab CI/CD pipeline status and generate comprehensive summaries with ver
 The `check_pipeline.py` script connects to GitLab API (gitlab.com or self-hosted) and generates a summary with:
 - Pipeline status and metadata
 - Job breakdown by status
-- Failed jobs details
+- Failed jobs details with log tails
+- Root cause analysis against an optional knowledge base (with confidence %)
 - Simple verdict (PASS/FAIL/IN PROGRESS)
 
 ## Usage
@@ -76,6 +77,44 @@ python scripts/check_pipeline.py \
 - `--project`: Project ID or path - e.g., '278964' or 'group/project' (required if `--link` not used)
 - `--pipeline`: Pipeline ID (optional - fetches latest if not specified)
 - `--token`: GitLab API token (required for private projects)
+- `--tail`: Number of log lines per failed job (default: 50, 0 = full log)
+- `--knowledge`: One or more knowledge base sources for root cause analysis (URLs or local file paths)
+
+## Knowledge Base (Root Cause Analysis)
+
+Provide `--knowledge` sources to correlate failed job logs against known issues.
+The script extracts error phrases from logs, matches them against the knowledge base,
+and reports a confidence percentage for each failed job.
+
+### Supported Sources
+
+- **URLs**: Any HTTP(S) URL returning text (GitLab blob URLs are auto-converted to raw)
+- **Local files**: Paths relative to the `knowledge/` folder, or absolute paths
+
+### Examples
+
+```bash
+# Use a project README as knowledge base
+python scripts/check_pipeline.py \
+  --link https://gitlab.example.com/group/project/-/pipelines/283 \
+  --token YOUR_TOKEN \
+  --knowledge https://gitlab.example.com/group/project/-/blob/main/README.md
+
+# Use a local runbook
+python scripts/check_pipeline.py \
+  --link https://gitlab.example.com/group/project/-/pipelines/283 \
+  --knowledge example-runbook.md
+
+# Multiple sources
+python scripts/check_pipeline.py \
+  --link https://gitlab.example.com/group/project/-/pipelines/283 \
+  --knowledge example-runbook.md https://gitlab.example.com/group/project/-/blob/main/docs/ci-troubleshooting.md
+```
+
+### Knowledge Folder
+
+Place local knowledge files under the `knowledge/` folder (next to `scripts/`).
+An example runbook is provided at `knowledge/example-runbook.md`.
 
 ## Finding Project/Pipeline IDs
 
