@@ -17,6 +17,23 @@ The `check_pipeline.py` script connects to GitLab API (gitlab.com or self-hosted
 
 ## Usage
 
+### Check via Direct URL (Easiest)
+
+Paste a pipeline or job URL directly — the script extracts the instance, project, and ID automatically:
+
+```bash
+python scripts/check_pipeline.py --link https://gitlab.example.com/group/project/-/pipelines/283
+python scripts/check_pipeline.py --link https://gitlab.example.com/group/project/-/jobs/794
+```
+
+For private projects, add `--token`:
+
+```bash
+python scripts/check_pipeline.py --link https://gitlab.example.com/group/project/-/pipelines/283 --token YOUR_TOKEN
+```
+
+Job URLs are resolved to their parent pipeline automatically.
+
 ### Check Latest Pipeline (Public Project)
 
 For public projects on gitlab.com, only the project ID is required:
@@ -54,8 +71,9 @@ python scripts/check_pipeline.py \
 
 ## Parameters
 
+- `--link`: Direct GitLab pipeline or job URL (extracts instance, project, and ID automatically)
 - `--url`: GitLab instance URL (default: https://gitlab.com)
-- `--project`: Project ID or path (required) - e.g., '278964' or 'group/project'
+- `--project`: Project ID or path - e.g., '278964' or 'group/project' (required if `--link` not used)
 - `--pipeline`: Pipeline ID (optional - fetches latest if not specified)
 - `--token`: GitLab API token (required for private projects)
 

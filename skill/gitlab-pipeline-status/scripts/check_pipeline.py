@@ -6,10 +6,10 @@ Fetches and summarizes GitLab pipeline status from gitlab.com or self-hosted ins
 """
 
 import argparse
+import re
 import sys
 import io
 import requests
-from datetime import datetime
 from typing import Optional, Dict, Any
 
 # Fix encoding for Windows console
@@ -67,8 +67,45 @@ def get_verdict(status: str, failed_jobs: int = 0) -> str:
         return f"❓ UNKNOWN - Status: {status}"
 
 
+def parse_gitlab_link(link: str) -> Dict[str, str]:
+    """Parse a GitLab pipeline or job URL into components.
+
+    Supports:
+      - http://gitlab.example.com/group/project/-/pipelines/283
+      - http://gitlab.example.com/group/sub/project/-/jobs/794
+    """
+    match = re.match(r'^(https?://[^/]+)/(.+?)/-/(pipelines|jobs)/(\d+)$', link)
+    if not match:
+        raise ValueError(
+            f"Cannot parse GitLab URL: {link}\n"
+            "Expected format: <gitlab-url>/<project-path>/-/pipelines/<id> "
+            "or <gitlab-url>/<project-path>/-/jobs/<id>"
+        )
+    return {
+        "gitlab_url": match.group(1),
+        "project": match.group(2),
+        "type": match.group(3),       # "pipelines" or "jobs"
+        "id": match.group(4),
+    }
+
+
+def resolve_job_to_pipeline(gitlab_url: str, project_id: str, job_id: str, token: Optional[str]) -> str:
+    """Given a job ID, return its parent pipeline ID."""
+    from urllib.parse import quote
+    encoded = quote(project_id, safe='')
+    headers = {"PRIVATE-TOKEN": token} if token else {}
+    url = f"{gitlab_url}/api/v4/projects/{encoded}/jobs/{job_id}"
+    response = requests.get(url, headers=headers)
+    response.raise_for_status()
+    job = response.json()
+    return str(job["pipeline"]["id"])
+
+
 def fetch_pipeline(gitlab_url: str, project_id: str, pipeline_id: Optional[str], token: Optional[str]) -> Dict[str, Any]:
     """Fetch pipeline data from GitLab API."""
+    from urllib.parse import quote
+    # URL-encode project path (e.g., "root/my-project" -> "root%2Fmy-project")
+    project_id = quote(project_id, safe='')
     base_url = f"{gitlab_url}/api/v4"
     headers = {}
     
@@ -175,6 +212,10 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
+  # Check via direct pipeline or job URL
+  python check_pipeline.py --link http://gitlab.example.com/group/project/-/pipelines/283
+  python check_pipeline.py --link http://gitlab.example.com/group/project/-/jobs/794
+
   # Check latest pipeline for a project on gitlab.com
   python check_pipeline.py --project 278964
 
@@ -185,36 +226,60 @@ Examples:
   python check_pipeline.py --url https://gitlab.example.com --project 42 --token YOUR_TOKEN
         """
     )
-    
+
+    parser.add_argument(
+        "--link",
+        help="Direct GitLab pipeline or job URL (e.g., https://gitlab.com/group/project/-/pipelines/123)"
+    )
+
     parser.add_argument(
         "--url",
         default="https://gitlab.com",
         help="GitLab instance URL (default: https://gitlab.com)"
     )
-    
+
     parser.add_argument(
         "--project",
-        required=True,
         help="Project ID or path (e.g., '278964' or 'group/project')"
     )
-    
+
     parser.add_argument(
         "--pipeline",
         help="Pipeline ID (if not specified, fetches the latest pipeline)"
     )
-    
+
     parser.add_argument(
         "--token",
         help="GitLab API token (required for private projects)"
     )
-    
+
     args = parser.parse_args()
-    
+
+    if not args.link and not args.project:
+        parser.error("either --link or --project is required")
+
     try:
-        print(f"🔍 Fetching pipeline data from {args.url}...")
+        # Resolve --link into url/project/pipeline if provided
+        if args.link:
+            parsed = parse_gitlab_link(args.link)
+            gitlab_url = parsed["gitlab_url"]
+            project = parsed["project"]
+            if parsed["type"] == "jobs":
+                print(f"🔍 Resolving job {parsed['id']} to its pipeline...")
+                pipeline_id = resolve_job_to_pipeline(
+                    gitlab_url, project, parsed["id"], args.token
+                )
+            else:
+                pipeline_id = parsed["id"]
+        else:
+            gitlab_url = args.url
+            project = args.project
+            pipeline_id = args.pipeline
+
+        print(f"🔍 Fetching pipeline data from {gitlab_url}...")
         print()
-        
-        data = fetch_pipeline(args.url, args.project, args.pipeline, args.token)
+
+        data = fetch_pipeline(gitlab_url, project, pipeline_id, args.token)
         summary = summarize_pipeline(data)
         print(summary)
         
